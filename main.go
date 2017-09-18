@@ -36,7 +36,7 @@ func createConfiguration() router.Configuration {
 }
 
 func main() {
-	log.SetPrefix("The Tangram Composer ")
+	log.SetPrefix("Tangram ")
 	log.Printf("version: %s, build: %s, build date: %s", version, build, buildDate)
 	conf := createConfiguration()
 	conf.Register()
