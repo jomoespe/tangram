@@ -23,13 +23,13 @@ func createConfiguration() router.Configuration {
 		Timeout: 5000,
 		Routes: [...]router.Route{
 			router.Route{
-				Path:    "/zooplus/",
-				Service: "http://www.zooplus.es",
-			},
-			router.Route{
 				Path:    "/dachop/",
 				Service: "http://localhost:81/",
 			},
+//			router.Route{
+//				Path:    "/zooplus/",
+//				Service: "http://www.zooplus.es",
+//			},
 		},
 	}
 }
