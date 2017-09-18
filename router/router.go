@@ -7,9 +7,9 @@ import (
 	"golang.org/x/net/html"
 )
 
-type Configuration struct {
+type Config struct {
 	Timeout int
-	Routes  [1]Route // TODO do this as an array
+	Routes  []Route // TODO do this as an array
 }
 
 type Route struct {
@@ -22,10 +22,10 @@ const (
 )
 
 var (
-	conf Configuration
+	conf Config
 )
 
-func (conf Configuration) Register() {
+func (conf Config) Register() {
 	for _, route := range conf.Routes {
 		http.HandleFunc(route.Path, route.route)
 	}
@@ -66,10 +66,7 @@ func processNode(node *html.Node) html.Node {
 				cleanNode(node)
 				processed := processNode(component)
 				node.AppendChild(&processed)
-			} else {
-
 			}
-
 		}
 	}
 	for c := node.FirstChild; c != nil; c = c.NextSibling {
@@ -91,5 +88,5 @@ func cleanNode(node *html.Node) {
 	for c := node.FirstChild; c != nil; c = c.NextSibling {
 		node.RemoveChild(c)
 	}
-	// here data-loc attribute should be removed
+	// here data-loc attribute (and all the rest tangram related attributes) should be removed
 }

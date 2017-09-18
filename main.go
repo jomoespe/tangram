@@ -1,10 +1,16 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/jomoespe/tangram/router"
+	"github.com/pelletier/go-toml"
+)
+
+const (
+	configFile = "tangram.toml"
 )
 
 var (
@@ -19,26 +25,20 @@ func healthCheck(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func createConfiguration() router.Configuration {
-	return router.Configuration{
-		Timeout: 5000,
-		Routes: [...]router.Route{
-			router.Route{
-				Path:    "/dachop/",
-				Service: "http://localhost:81/",
-			},
-			//			router.Route{
-			//				Path:    "/zooplus/",
-			//				Service: "http://www.zooplus.es",
-			//			},
-		},
+func loadConfig() router.Config {
+	doc, err := ioutil.ReadFile(configFile)
+	if err != nil {
+		log.Fatal(err)
 	}
+	config := router.Config{}
+	toml.Unmarshal(doc, &config)
+	return config
 }
 
 func main() {
 	log.SetPrefix("Tangram ")
 	log.Printf("version: %s, build: %s, build date: %s", version, build, buildDate)
-	conf := createConfiguration()
+	conf := loadConfig()
 	conf.Register()
 	http.HandleFunc("/health", healthCheck)
 	log.Printf("Listening on %s", address)
