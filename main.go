@@ -15,6 +15,7 @@ var (
 )
 
 func healthCheck(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Server", "Tangram/"+version)
 	w.WriteHeader(http.StatusOK)
 }
 
@@ -26,10 +27,10 @@ func createConfiguration() router.Configuration {
 				Path:    "/dachop/",
 				Service: "http://localhost:81/",
 			},
-//			router.Route{
-//				Path:    "/zooplus/",
-//				Service: "http://www.zooplus.es",
-//			},
+			//			router.Route{
+			//				Path:    "/zooplus/",
+			//				Service: "http://www.zooplus.es",
+			//			},
 		},
 	}
 }
