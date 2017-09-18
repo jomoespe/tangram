@@ -3,43 +3,42 @@ package main
 import (
 	"log"
 	"net/http"
-)
 
-type Configuration struct {
-	Timeout int
-	Routes  Route // TODO do this as an array
-}
-type Route struct {
-	Service string
-	Path    string
-}
+	"github.com/jomoespe/tangram/router"
+)
 
 var (
 	version   = "unset"
 	build     = "undefined"
 	buildDate = "unknown"
 	address   = ":8000"
-	conf      Configuration
 )
 
 func healthCheck(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func loadConfiguration() {
-	routes := Route{Service: "dachop-index", Path: "/dachop/"}
-	conf = Configuration{
+func createConfiguration() router.Configuration {
+	return router.Configuration{
 		Timeout: 5000,
-		Routes:  routes}
-
+		Routes: [...]router.Route{
+			router.Route{
+				Path:    "/zooplus/",
+				Service: "http://www.zooplus.es",
+			},
+			router.Route{
+				Path:    "/dachop/",
+				Service: "http://www.google.com",
+			},
+		},
+	}
 }
 
 func main() {
 	log.SetPrefix("The Tangram Composer ")
 	log.Printf("version: %s, build: %s, build date: %s", version, build, buildDate)
-	loadConfiguration()
-	log.Printf("configuration loaded: %s", conf)
-
+	conf := createConfiguration()
+	conf.Register()
 	http.HandleFunc("/health", healthCheck)
 	log.Printf("Listening on %s", address)
 	log.Fatal(http.ListenAndServe(address, nil))
