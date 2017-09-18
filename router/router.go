@@ -1,9 +1,11 @@
 package router
 
 import (
-    "bytes"
+    //"bytes"
     "net/http"
-    "fmt"
+    //"fmt"
+
+    "golang.org/x/net/html"
 )
 
 var (
@@ -21,20 +23,24 @@ type Route struct {
 }
 
 func (route Route) route(w http.ResponseWriter, r *http.Request) {
-    w.WriteHeader(http.StatusOK)
-    fmt.Fprintf(w, "Here we'll routing %s to %s\n\n", route.Path, route.Service)
-    resp, _ := http.Get(route.Service)
-    body := new(bytes.Buffer)
-    body.ReadFrom(resp.Body)
-
-
-    w.WriteHeader(http.StatusOK)
-    w.Header().Set("Content-Type", "text/html")
-    fmt.Fprintln(w, body.String())
+    resp, err := http.Get(route.Service)
+    if err == nil {
+        root, _ := html.Parse(resp.Body)
+        node := processNode(root)
+        w.Header().Set("Content-Type", "text/html")
+        w.WriteHeader(http.StatusOK)
+        html.Render(w, &node)
+    } else {
+        w.WriteHeader(http.StatusNotFound)
+    }
 }
 
 func (conf Configuration) Register() {
     for _, route := range conf.Routes {
         http.HandleFunc(route.Path, route.route)
     }
+}
+
+func processNode(node *html.Node) (html.Node) {
+    return *node
 }

@@ -28,7 +28,7 @@ func createConfiguration() router.Configuration {
 			},
 			router.Route{
 				Path:    "/dachop/",
-				Service: "http://www.google.com",
+				Service: "http://localhost:81/",
 			},
 		},
 	}
