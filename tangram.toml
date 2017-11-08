@@ -1,0 +1,9 @@
+Timeout = 2000
+
+[[Routes]]
+Path    = "/dachop/"
+Service = "http://localhost:81/"
+
+[[Routes]]
+Path    = "/zooplus/"
+Service = "http://zooplus.es/"
